@@ -8,12 +8,12 @@ import (
 	"github.com/pipelined/wav"
 )
 
-// Example:
-//		Read .wav file
-// 		Split it to samples
-// 		Put samples to track
-//		Save track into .wav and play it with portaudio
-func four() {
+// Example4 demonstrates:
+//	* Read signal from .wav file
+// 	* Slice signal into Clips
+// 	* Put Clips to Track
+//	* Save track signal into .wav and play it with portaudio at the same time
+func Example4() {
 	bufferSize := 512
 
 	// wav pump

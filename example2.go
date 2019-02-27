@@ -7,11 +7,11 @@ import (
 	"github.com/pipelined/wav"
 )
 
-// Example:
-//		Read .wav file
-//		Process it with VST2 plugin
-// 		Save result into new .wav file
-func two() {
+// Example2 demonstrates:
+//	* Read signal from .wav file
+//	* Process signal with VST2 plugin
+// 	* Save signal into new .wav file
+func Example2() {
 	bufferSize := 512
 	wavPump := wav.NewPump("_testdata/sample1.wav")
 

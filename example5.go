@@ -8,15 +8,15 @@ import (
 	"github.com/pipelined/wav"
 )
 
-// Example:
-//		Read two .wav files
-//		Mix them
-// 		Process with vst2
-//		Save result into new .wav file
+// Example5 demonstrates:
+//	* Read signals from .wav files
+//	* Mix signals with mixer
+// 	* Process signal with VST2 plugin
+//	* Save signal into new .wav file
 //
-// NOTE: For example both wav files have same characteristics i.e: sample rate, bit depth and number of channels.
+// NOTE: For example both wav files have same characteristics i.e: sample rate and number of channels.
 // In real life implicit conversion will be needed.
-func five() {
+func Example5() {
 	bufferSize := 512
 
 	// wav pump 1

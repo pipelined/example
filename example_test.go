@@ -4,22 +4,22 @@ import (
 	"testing"
 )
 
-func TestOne(t *testing.T) {
-	one()
+func Test1(t *testing.T) {
+	Example1()
 }
 
-func TestTwo(t *testing.T) {
-	two()
+func Test2(t *testing.T) {
+	Example2()
 }
 
-func TestThree(t *testing.T) {
-	three()
+func Test3(t *testing.T) {
+	Example3()
 }
 
-func TestFour(t *testing.T) {
-	four()
+func Test4(t *testing.T) {
+	Example4()
 }
 
-func TestFive(t *testing.T) {
-	five()
+func Test5(t *testing.T) {
+	Example5()
 }

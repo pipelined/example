@@ -6,10 +6,10 @@ import (
 	"github.com/pipelined/wav"
 )
 
-// Example:
-//		Read .wav file
-//		Play it with portaudio
-func one() {
+// Example1 demonstrates:
+//	* Read signal from .wav file
+//	* Play signal with portaudio
+func Example1() {
 	bufferSize := 512
 	// wav pump
 	wavPump := wav.NewPump("_testdata/sample1.wav")

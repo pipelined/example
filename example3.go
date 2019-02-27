@@ -7,14 +7,14 @@ import (
 	"github.com/pipelined/wav"
 )
 
-// Example:
-//		Read two .wav files
-//		Mix them
-//		Save result into new .wav file
+// Example3 demonstrates:
+//	* Read signals from .wav files
+//	* Mix signals with mixer
+//	* Save mixed signal into new .wav file
 //
-// NOTE: For example both wav files have same characteristics i.e: sample rate, bit depth and number of channels.
+// NOTE: For example both wav files have same characteristics i.e: sample rate and number of channels.
 // In real life implicit conversion will be needed.
-func three() {
+func Example3() {
 	bufferSize := 512
 
 	wavPump1 := wav.NewPump("_testdata/sample1.wav")
