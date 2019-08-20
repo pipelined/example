@@ -1,6 +1,9 @@
 package example
 
 import (
+	"context"
+	"os"
+
 	"github.com/pipelined/mixer"
 	"github.com/pipelined/pipe"
 	"github.com/pipelined/signal"
@@ -16,51 +19,55 @@ import (
 // In real life implicit conversion will be needed.
 func Example3() {
 	bufferSize := 512
+	// open first wav input
+	inputFile1, err := os.Open("_testdata/sample1.wav")
+	check(err)
+	defer inputFile1.Close()
 
-	wavPump1 := wav.NewPump("_testdata/sample1.wav")
+	// open second wav input
+	inputFile2, err := os.Open("_testdata/sample2.wav")
+	check(err)
+	defer inputFile2.Close()
 
-	wavPump2 := wav.NewPump("_testdata/sample2.wav")
+	// create output file
+	outputFile, err := os.Create("_testdata/out3.wav")
+	check(err)
+	defer outputFile.Close()
 
-	wavSink, err := wav.NewSink(
-		"_testdata/out3.wav",
-		signal.BitDepth16,
+	// create mixer
+	mix := mixer.New()
+
+	// create a line with three pipes
+	l, err := pipe.Line(
+		// pipe for first input
+		&pipe.Pipe{
+			// wav pump
+			Pump: &wav.Pump{ReadSeeker: inputFile1},
+			// mixer sink
+			Sinks: pipe.Sinks(mix),
+		},
+		// pipe for second input
+		&pipe.Pipe{
+			// wav pump
+			Pump: &wav.Pump{ReadSeeker: inputFile2},
+			// mixer sink
+			Sinks: pipe.Sinks(mix),
+		},
+		// pipe for output
+		&pipe.Pipe{
+			// mixer pump
+			Pump: mix,
+			// wav sink
+			Sinks: pipe.Sinks(
+				&wav.Sink{
+					WriteSeeker: outputFile,
+					BitDepth:    signal.BitDepth16,
+				},
+			),
+		},
 	)
 	check(err)
-	mixer := mixer.New()
 
-	track1, err := pipe.New(
-		bufferSize,
-		pipe.WithPump(wavPump1),
-		pipe.WithSinks(mixer),
-	)
-	check(err)
-	defer track1.Close()
-	track2, err := pipe.New(
-		bufferSize,
-		pipe.WithPump(wavPump2),
-		pipe.WithSinks(mixer),
-	)
-	check(err)
-	defer track2.Close()
-	out, err := pipe.New(
-		bufferSize,
-		pipe.WithPump(mixer),
-		pipe.WithSinks(wavSink),
-	)
-	check(err)
-	defer out.Close()
-
-	track1Errc := track1.Run()
-	check(err)
-	track2Errc := track2.Run()
-	check(err)
-	outErrc := out.Run()
-	check(err)
-
-	err = pipe.Wait(track1Errc)
-	check(err)
-	err = pipe.Wait(track2Errc)
-	check(err)
-	err = pipe.Wait(outErrc)
+	err = pipe.Wait(l.Run(context.Background(), bufferSize))
 	check(err)
 }

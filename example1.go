@@ -1,6 +1,9 @@
 package example
 
 import (
+	"context"
+	"os"
+
 	"github.com/pipelined/pipe"
 	"github.com/pipelined/portaudio"
 	"github.com/pipelined/wav"
@@ -11,22 +14,24 @@ import (
 //	* Play signal with portaudio
 func Example1() {
 	bufferSize := 512
-	// wav pump
-	wavPump := wav.NewPump("_testdata/sample1.wav")
+	// open source file
+	wavFile, err := os.Open("_testdata/sample1.wav")
+	check(err)
+	defer wavFile.Close()
 
-	// portaudio sink
-	paSink := portaudio.NewSink()
-
-	// build pipe
-	p, err := pipe.New(
-		bufferSize,
-		pipe.WithPump(wavPump),
-		pipe.WithSinks(paSink),
+	// build line with a single pipe
+	l, err := pipe.Line(
+		&pipe.Pipe{
+			// wav pump
+			Pump: &wav.Pump{ReadSeeker: wavFile},
+			// portaudio sink
+			Sinks: pipe.Sinks(&portaudio.Sink{}),
+		},
 	)
 	check(err)
-	defer p.Close()
+	defer l.Close()
 
-	// run pipe
-	err = pipe.Wait(p.Run())
+	// run the line
+	err = pipe.Wait(l.Run(context.Background(), bufferSize))
 	check(err)
 }

@@ -1,6 +1,9 @@
 package example
 
 import (
+	"context"
+	"os"
+
 	"github.com/pipelined/pipe"
 	"github.com/pipelined/signal"
 	"github.com/pipelined/vst2"
@@ -13,31 +16,40 @@ import (
 // 	* Save signal into new .wav file
 func Example2() {
 	bufferSize := 512
-	wavPump := wav.NewPump("_testdata/sample1.wav")
+	// open input file
+	inputFile, err := os.Open("_testdata/sample1.wav")
+	check(err)
+	defer inputFile.Close()
 
-	vst2lib, err := vst2.Open("_testdata/Krush.vst")
+	// open vst library
+	lib, err := vst2.Open("_testdata/Krush.vst")
 	check(err)
-	defer vst2lib.Close()
+	defer lib.Close()
+	// open vst plugin
+	plugin, err := lib.Open()
+	check(err)
+	defer plugin.Close()
 
-	vst2plugin, err := vst2lib.Open()
+	// create output file
+	outputFile, err := os.Create("_testdata/out2.wav")
 	check(err)
-	defer vst2plugin.Close()
-	vst2processor := vst2.NewProcessor(
-		vst2plugin,
-	)
-	wavSink, err := wav.NewSink(
-		"_testdata/out2.wav",
-		signal.BitDepth16,
-	)
-	check(err)
-	p, err := pipe.New(
-		bufferSize,
-		pipe.WithPump(wavPump),
-		pipe.WithProcessors(vst2processor),
-		pipe.WithSinks(wavSink),
+	defer outputFile.Close()
+
+	// build a line with single pipe
+	l, err := pipe.Line(
+		&pipe.Pipe{
+			// wav pump
+			Pump: &wav.Pump{ReadSeeker: inputFile},
+			// vst2 processor
+			Processors: pipe.Processors(&vst2.Processor{Plugin: plugin}),
+			// wav sink
+			Sinks: pipe.Sinks(&wav.Sink{BitDepth: signal.BitDepth16, WriteSeeker: outputFile}),
+		},
 	)
 	check(err)
-	defer p.Close()
-	err = pipe.Wait(p.Run())
+	defer l.Close()
+
+	// run the line
+	err = pipe.Wait(l.Run(context.Background(), bufferSize))
 	check(err)
 }
