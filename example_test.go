@@ -1,25 +1,25 @@
-package example
+package example_test
 
 import (
 	"testing"
 )
 
 func Test1(t *testing.T) {
-	Example1()
+	Example_1()
 }
 
 func Test2(t *testing.T) {
-	Example2()
+	Example_2()
 }
 
 func Test3(t *testing.T) {
-	Example3()
+	Example_3()
 }
 
 func Test4(t *testing.T) {
-	Example4()
+	Example_4()
 }
 
 func Test5(t *testing.T) {
-	Example5()
+	Example_5()
 }
