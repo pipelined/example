@@ -34,6 +34,8 @@ github.com/pipelined/pipe v0.5.1 h1:EhaGEO7CS3EtIpW3CPCqAy60L7ITv8x+nagFdSza5Ak=
 github.com/pipelined/pipe v0.5.1/go.mod h1:4AORj+Rw3Ar6xskD7rRyL/jYrc1PfGd7JLTHWgDRlD8=
 github.com/pipelined/pipe v0.5.2 h1:KprGRf+nJfJordHhShL4z3itMw8o+6kZvprmDz82zSI=
 github.com/pipelined/pipe v0.5.2/go.mod h1:J9HSovF/uZfEyYpeU8jH4vo5/btHsw1PGBkotVG+ojs=
+github.com/pipelined/pipe v0.5.3 h1:ZqE+62D4xpRp5IRQ8Iv5dB0JTgyXe+9kZFTKidHhBDc=
+github.com/pipelined/pipe v0.5.3/go.mod h1:YhL24dHWxZ08WE3YhEI7T3MAiVrgQenthRIMkQ3GRqc=
 github.com/pipelined/portaudio v0.0.0-20190820055226-d77195b43cc4 h1:ouDiWCFmEFX46oeKPw2gPQoO4cr2tptZivJyERhXkgE=
 github.com/pipelined/portaudio v0.0.0-20190820055226-d77195b43cc4/go.mod h1:ox6prA2AtUlUCFqLFE2XNI5RvOgfWGgv7KfPHyMlKsg=
 github.com/pipelined/signal v0.0.0-20190217150524-6f12bde3dee3/go.mod h1:2hObqg30KY6FBiLwiO5kvSui/3C2XWCks06RD/A1m7I=
@@ -41,6 +43,8 @@ github.com/pipelined/signal v0.1.0 h1:3UKsuDT/Gl1gFCeik59+28jpBC7ZVRIOJTV8p0SjvN
 github.com/pipelined/signal v0.1.0/go.mod h1:2hObqg30KY6FBiLwiO5kvSui/3C2XWCks06RD/A1m7I=
 github.com/pipelined/signal v0.2.0 h1:k2HwQkh0wL8oDYgEQXCpBWoBbI3y1EsxyDqeMchergY=
 github.com/pipelined/signal v0.2.0/go.mod h1:2hObqg30KY6FBiLwiO5kvSui/3C2XWCks06RD/A1m7I=
+github.com/pipelined/signal v0.2.1 h1:FbUdoEDBaeeA68yoFP1Iyod+KCZ0HvLRCuSytopA9TQ=
+github.com/pipelined/signal v0.2.1/go.mod h1:fbzWudlb7qHW4YQ61Y3qzIDI41rJnxNlcjUeTGNukh8=
 github.com/pipelined/vst2 v0.3.0 h1:GmQTJZhcRw7ipCG8qGpCp+jsQrd2TC64hyuRMrKGcYI=
 github.com/pipelined/vst2 v0.3.0/go.mod h1:dRgk5T50+dFFMeaa4zvGRGy+44C5U6BGMjAU26PUoxY=
 github.com/pipelined/vst2 v0.4.0 h1:01iYrX88ON9GpqUG1/xEp3R9EiiedcGucKzECSAf9Dk=
