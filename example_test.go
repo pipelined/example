@@ -23,3 +23,7 @@ func Test4(t *testing.T) {
 func Test5(t *testing.T) {
 	Example_5()
 }
+
+func Test6(t *testing.T) {
+	Example_6()
+}
