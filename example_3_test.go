@@ -39,27 +39,27 @@ func Example_3() {
 	}
 	defer outputFile.Close()
 
-	// create mixer.
-	mix := mixer.New()
+	// create mixer with 2 channels.
+	mix := mixer.New(2)
 
-	// create a line with three pipes.
-	l, err := pipe.Line(
-		// pipe for first input.
-		&pipe.Pipe{
+	// create a pipe with three pipes.
+	p, err := pipe.New(
+		// line for first input.
+		&pipe.Line{
 			// wav pump.
 			Pump: &wav.Pump{ReadSeeker: inputFile1},
 			// mixer sink.
 			Sinks: pipe.Sinks(mix),
 		},
-		// pipe for second input
-		&pipe.Pipe{
+		// line for second input
+		&pipe.Line{
 			// wav pump.
 			Pump: &wav.Pump{ReadSeeker: inputFile2},
 			// mixer sink.
 			Sinks: pipe.Sinks(mix),
 		},
-		// pipe for output.
-		&pipe.Pipe{
+		// line for output.
+		&pipe.Line{
 			// mixer pump.
 			Pump: mix,
 			// wav sink.
@@ -74,9 +74,10 @@ func Example_3() {
 	if err != nil {
 		log.Fatalf("failed to bind pipeline: %w", err)
 	}
+	defer p.Close()
 
 	// run the pipeline.
-	err = pipe.Wait(l.Run(context.Background(), 512))
+	err = pipe.Wait(p.Run(context.Background(), 512))
 	if err != nil {
 		log.Fatalf("failed to execute pipeline: %w", err)
 	}
