@@ -26,9 +26,9 @@ func Example_4() {
 	// asset sink.
 	asset := &audio.Asset{}
 
-	// import pipeline.
-	importLine, err := pipe.Line(
-		&pipe.Pipe{
+	// read wav pipeline.
+	wavFile, err := pipe.New(
+		&pipe.Line{
 			// wav pump.
 			Pump: &wav.Pump{ReadSeeker: inputFile},
 			// in-memory asset.
@@ -38,9 +38,9 @@ func Example_4() {
 	if err != nil {
 		log.Fatalf("failed to bind import pipeline: %w", err)
 	}
-	defer importLine.Close()
+	defer wavFile.Close()
 
-	err = pipe.Wait(importLine.Run(context.Background(), 512))
+	err = pipe.Wait(wavFile.Run(context.Background(), 512))
 	if err != nil {
 		log.Fatalf("failed to execute import pipeline: %w", err)
 	}
@@ -61,8 +61,8 @@ func Example_4() {
 	defer outputFile.Close()
 
 	// pipeline to process clips.
-	l, err := pipe.Line(
-		&pipe.Pipe{
+	p, err := pipe.New(
+		&pipe.Line{
 			// track with clips.
 			Pump: track,
 			Sinks: pipe.Sinks(
@@ -79,9 +79,10 @@ func Example_4() {
 	if err != nil {
 		log.Fatalf("failed to bind playback and save pipeline: %w", err)
 	}
+	defer p.Close()
 
 	// run the pipeline.
-	err = pipe.Wait(l.Run(context.Background(), 512))
+	err = pipe.Wait(p.Run(context.Background(), 512))
 	if err != nil {
 		log.Fatalf("failed to execute playback and save pipeline: %w", err)
 	}
