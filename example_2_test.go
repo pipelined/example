@@ -35,9 +35,9 @@ func Example_2() {
 	}
 	defer outputFile.Close()
 
-	// build a line with single pipe.
-	l, err := pipe.Line(
-		&pipe.Pipe{
+	// build a pipe with single line.
+	p, err := pipe.New(
+		&pipe.Line{
 			// wav pump.
 			Pump: &wav.Pump{
 				ReadSeeker: inputFile,
@@ -60,10 +60,10 @@ func Example_2() {
 	if err != nil {
 		log.Fatalf("failed to bind pipeline: %w", err)
 	}
-	defer l.Close()
+	defer p.Close()
 
 	// run the pipeline.
-	err = pipe.Wait(l.Run(context.Background(), 512))
+	err = pipe.Wait(p.Run(context.Background(), 512))
 	if err != nil {
 		log.Fatalf("failed to execute pipeline: %w", err)
 	}

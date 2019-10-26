@@ -33,8 +33,8 @@ func Example_5() {
 	}
 	defer inputFile2.Close()
 
-	// create new mixer.
-	mixer := mixer.New()
+	// create new mixer with 2 channels.
+	mixer := mixer.New(2)
 
 	// open vst library.
 	vst, err := vst2.Open("_testdata/Krush.vst")
@@ -50,24 +50,24 @@ func Example_5() {
 	}
 	defer outputFile.Close()
 
-	// create a line with three pipes.
-	l, err := pipe.Line(
-		// pipe for mixing first wav file.
-		&pipe.Pipe{
+	// create a pipe with three lines.
+	p, err := pipe.New(
+		// line for mixing first wav file.
+		&pipe.Line{
 			// wav pump.
 			Pump: &wav.Pump{ReadSeeker: inputFile1},
 			// mixer sink.
 			Sinks: pipe.Sinks(mixer),
 		},
-		// pipe for mixing second wav file.
-		&pipe.Pipe{
+		// line for mixing second wav file.
+		&pipe.Line{
 			// wav pump.
 			Pump: &wav.Pump{ReadSeeker: inputFile2},
 			// mixer sink.
 			Sinks: pipe.Sinks(mixer),
 		},
-		// pipe for sinking mp3.
-		&pipe.Pipe{
+		// line for sinking mp3.
+		&pipe.Line{
 			// mixer pump.
 			Pump: mixer,
 			// vst2 processor.
@@ -85,10 +85,10 @@ func Example_5() {
 	if err != nil {
 		log.Fatalf("failed to bind pipeline: %w", err)
 	}
-	defer l.Close()
+	defer p.Close()
 
 	// run the pipeline.
-	err = pipe.Wait(l.Run(context.Background(), 512))
+	err = pipe.Wait(p.Run(context.Background(), 512))
 	if err != nil {
 		log.Fatalf("failed to execute pipeline: %w", err)
 	}

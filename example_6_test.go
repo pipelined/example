@@ -30,9 +30,9 @@ func Example_6() {
 
 	// asset to keep mp3 signal.
 	a := &audio.Asset{}
-	// build line with a single pipe.
-	l, err := pipe.Line(
-		&pipe.Pipe{
+	// build pipe with a single line.
+	p, err := pipe.New(
+		&pipe.Line{
 			// mp3 pump.
 			Pump: &mp3.Pump{
 				Reader: mp3File,
@@ -44,9 +44,9 @@ func Example_6() {
 	if err != nil {
 		log.Fatalf("failed to bind asset pipeline: %w", err)
 	}
-	defer l.Close()
+	defer p.Close()
 	// run the line.
-	err = pipe.Wait(l.Run(context.Background(), 512))
+	err = pipe.Wait(p.Run(context.Background(), 512))
 	if err != nil {
 		log.Fatalf("failed to execute asset pipeline: %w", err)
 	}
@@ -59,9 +59,9 @@ func Example_6() {
 		sampleRate.SamplesIn(time.Millisecond*1000),
 		sampleRate.SamplesIn(time.Millisecond*2500),
 	)
-	// build line with a single pipe.
-	l, err = pipe.Line(
-		&pipe.Pipe{
+	// build pipe with a single line.
+	p, err = pipe.New(
+		&pipe.Line{
 			// mp3 pump.
 			Pump: c,
 			// asset sink.
@@ -78,9 +78,9 @@ func Example_6() {
 	if err != nil {
 		log.Fatalf("failed to bind output pipeline: %w", err)
 	}
-	defer l.Close()
+	defer p.Close()
 	// run the line.
-	err = pipe.Wait(l.Run(context.Background(), 512))
+	err = pipe.Wait(p.Run(context.Background(), 512))
 	if err != nil {
 		log.Fatalf("failed to execute output pipeline: %w", err)
 	}
