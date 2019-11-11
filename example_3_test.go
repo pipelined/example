@@ -21,21 +21,21 @@ func Example_3() {
 	// open first wav input.
 	inputFile1, err := os.Open("_testdata/sample1.wav")
 	if err != nil {
-		log.Fatalf("failed to open first input file: %w", err)
+		log.Fatalf("failed to open first input file: %v", err)
 	}
 	defer inputFile1.Close()
 
 	// open second wav input.
 	inputFile2, err := os.Open("_testdata/sample2.wav")
 	if err != nil {
-		log.Fatalf("failed to open second input file: %w", err)
+		log.Fatalf("failed to open second input file: %v", err)
 	}
 	defer inputFile2.Close()
 
 	// create output file.
 	outputFile, err := os.Create("_testdata/out3.wav")
 	if err != nil {
-		log.Fatalf("failed to create output file: %w", err)
+		log.Fatalf("failed to create output file: %v", err)
 	}
 	defer outputFile.Close()
 
@@ -72,13 +72,13 @@ func Example_3() {
 		},
 	)
 	if err != nil {
-		log.Fatalf("failed to bind pipeline: %w", err)
+		log.Fatalf("failed to bind pipeline: %v", err)
 	}
 	defer p.Close()
 
 	// run the pipeline.
 	err = pipe.Wait(p.Run(context.Background(), 512))
 	if err != nil {
-		log.Fatalf("failed to execute pipeline: %w", err)
+		log.Fatalf("failed to execute pipeline: %v", err)
 	}
 }

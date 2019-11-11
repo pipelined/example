@@ -17,14 +17,14 @@ func Example_6() {
 	// open source wav file.
 	mp3File, err := os.Open("_testdata/sample.mp3")
 	if err != nil {
-		log.Fatalf("failed to open mp3 file: %w", err)
+		log.Fatalf("failed to open mp3 file: %v", err)
 	}
 	defer mp3File.Close()
 
 	// create output file.
 	outputFile, err := os.Create("_testdata/out6.mp3")
 	if err != nil {
-		log.Fatalf("failed to create output file: %w", err)
+		log.Fatalf("failed to create output file: %v", err)
 	}
 	defer outputFile.Close()
 
@@ -42,13 +42,13 @@ func Example_6() {
 		},
 	)
 	if err != nil {
-		log.Fatalf("failed to bind asset pipeline: %w", err)
+		log.Fatalf("failed to bind asset pipeline: %v", err)
 	}
 	defer p.Close()
 	// run the line.
 	err = pipe.Wait(p.Run(context.Background(), 512))
 	if err != nil {
-		log.Fatalf("failed to execute asset pipeline: %w", err)
+		log.Fatalf("failed to execute asset pipeline: %v", err)
 	}
 
 	// get the sample rate of the asset.
@@ -76,12 +76,12 @@ func Example_6() {
 		},
 	)
 	if err != nil {
-		log.Fatalf("failed to bind output pipeline: %w", err)
+		log.Fatalf("failed to bind output pipeline: %v", err)
 	}
 	defer p.Close()
 	// run the line.
 	err = pipe.Wait(p.Run(context.Background(), 512))
 	if err != nil {
-		log.Fatalf("failed to execute output pipeline: %w", err)
+		log.Fatalf("failed to execute output pipeline: %v", err)
 	}
 }

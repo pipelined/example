@@ -19,7 +19,7 @@ func Example_4() {
 	// open input file.
 	inputFile, err := os.Open("_testdata/sample1.wav")
 	if err != nil {
-		log.Fatalf("failed to open input file: %w", err)
+		log.Fatalf("failed to open input file: %v", err)
 	}
 	defer inputFile.Close()
 
@@ -36,13 +36,13 @@ func Example_4() {
 		},
 	)
 	if err != nil {
-		log.Fatalf("failed to bind import pipeline: %w", err)
+		log.Fatalf("failed to bind import pipeline: %v", err)
 	}
 	defer wavFile.Close()
 
 	err = pipe.Wait(wavFile.Run(context.Background(), 512))
 	if err != nil {
-		log.Fatalf("failed to execute import pipeline: %w", err)
+		log.Fatalf("failed to execute import pipeline: %v", err)
 	}
 
 	// track pump.
@@ -56,7 +56,7 @@ func Example_4() {
 	// create output file.
 	outputFile, err := os.Create("_testdata/out4.wav")
 	if err != nil {
-		log.Fatalf("failed to create output file: %w", err)
+		log.Fatalf("failed to create output file: %v", err)
 	}
 	defer outputFile.Close()
 
@@ -77,13 +77,13 @@ func Example_4() {
 		},
 	)
 	if err != nil {
-		log.Fatalf("failed to bind playback and save pipeline: %w", err)
+		log.Fatalf("failed to bind playback and save pipeline: %v", err)
 	}
 	defer p.Close()
 
 	// run the pipeline.
 	err = pipe.Wait(p.Run(context.Background(), 512))
 	if err != nil {
-		log.Fatalf("failed to execute playback and save pipeline: %w", err)
+		log.Fatalf("failed to execute playback and save pipeline: %v", err)
 	}
 }

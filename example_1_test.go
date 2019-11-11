@@ -15,7 +15,7 @@ func Example_1() {
 	// open source wav file.
 	wavFile, err := os.Open("_testdata/sample1.wav")
 	if err != nil {
-		log.Fatalf("failed to open wav file: %w", err)
+		log.Fatalf("failed to open wav file: %v", err)
 	}
 	defer wavFile.Close()
 
@@ -31,13 +31,13 @@ func Example_1() {
 		},
 	)
 	if err != nil {
-		log.Fatalf("failed to bind pipeline: %w", err)
+		log.Fatalf("failed to bind pipeline: %v", err)
 	}
 	defer p.Close()
 
 	// run the pipe.
 	err = pipe.Wait(p.Run(context.Background(), 512))
 	if err != nil {
-		log.Fatalf("failed to execute pipeline: %w", err)
+		log.Fatalf("failed to execute pipeline: %v", err)
 	}
 }
