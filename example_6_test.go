@@ -6,9 +6,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/pipelined/audio"
-	"github.com/pipelined/mp3"
-	"github.com/pipelined/pipe"
+	"pipelined.dev/audio"
+	"pipelined.dev/mp3"
+	"pipelined.dev/pipe"
 )
 
 // This example demonstrates how to cut a clip from .mp3 file

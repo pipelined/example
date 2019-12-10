@@ -5,11 +5,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/pipelined/mixer"
-	"github.com/pipelined/mp3"
-	"github.com/pipelined/pipe"
-	"github.com/pipelined/vst2"
-	"github.com/pipelined/wav"
+	"pipelined.dev/audio"
+	"pipelined.dev/mp3"
+	"pipelined.dev/pipe"
+	"pipelined.dev/vst2"
+	"pipelined.dev/wav"
 )
 
 // This example demonstrates how to read two .wav files, mix,
@@ -34,7 +34,7 @@ func Example_5() {
 	defer inputFile2.Close()
 
 	// create new mixer with 2 channels.
-	mixer := mixer.New(2)
+	mixer := audio.NewMixer(2)
 
 	// open vst library.
 	vst, err := vst2.Open("_testdata/Krush.vst")

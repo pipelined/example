@@ -5,9 +5,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/pipelined/pipe"
-	"github.com/pipelined/portaudio"
-	"github.com/pipelined/wav"
+	"pipelined.dev/pipe"
+	"pipelined.dev/portaudio"
+	"pipelined.dev/wav"
 )
 
 // This example demonstrates how to play .wav file with portaudio.

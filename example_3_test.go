@@ -5,10 +5,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/pipelined/mixer"
-	"github.com/pipelined/pipe"
-	"github.com/pipelined/signal"
-	"github.com/pipelined/wav"
+	"pipelined.dev/audio"
+	"pipelined.dev/pipe"
+	"pipelined.dev/signal"
+	"pipelined.dev/wav"
 )
 
 // This example demonstrates how to read two .wav files,
@@ -40,7 +40,7 @@ func Example_3() {
 	defer outputFile.Close()
 
 	// create mixer with 2 channels.
-	mix := mixer.New(2)
+	mix := audio.NewMixer(2)
 
 	// create a pipe with three pipes.
 	p, err := pipe.New(

@@ -55,3 +55,17 @@ gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 h1:qIbj1fsPNlZgppZ+VLlY7N33
 gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=
 gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
+pipelined.dev/audio v0.2.2-0.20191204072949-aab07b1e55dd h1:KuuPzz0BOWH6K/LK5OhOuCcyHo40XdJDYfDEirU8n88=
+pipelined.dev/audio v0.2.2-0.20191204072949-aab07b1e55dd/go.mod h1:18VMEqCFwAB0D6/GaiYlkvK2t8z8OZZNPS8sGpCJX+A=
+pipelined.dev/mp3 v0.4.0 h1:JU3HK6ngMdULj8M+Vm/hUPmdYB2DS3A4tq3qOr+jOUg=
+pipelined.dev/mp3 v0.4.0/go.mod h1:BF5vIci2wae3Yek29K+pf9n7WBgE95hj201/CNnMMoU=
+pipelined.dev/pipe v0.7.0 h1:ZYQn0bCU2dCIw35zTV8cELXVtH+CMAT7MveODk8A6Q0=
+pipelined.dev/pipe v0.7.0/go.mod h1:zPFLVshaR8vzrgw4MYOo/n9hsnj1L1QJxhTn8M7ty4k=
+pipelined.dev/portaudio v0.2.0 h1:2x6z7p058X+Qp/wQxlOGX7IEmzrPb3b/cUc6JPsalYg=
+pipelined.dev/portaudio v0.2.0/go.mod h1:vLab1osO5HAEEfQMGZwegHBiU0N1co1TCl4j/cIWNPE=
+pipelined.dev/signal v0.5.1 h1:YUByar6Ag2QADGrwJSle8cBNX47QXjKcO5Et8j7X0tk=
+pipelined.dev/signal v0.5.1/go.mod h1:ko39GxEHlEuj853CmzFWTID6qotniC3bw0KiUndPxvI=
+pipelined.dev/vst2 v0.6.0 h1:Km+RrjuWxC53+YBiowglwNWYrwjxtpnm2g8TV72C1kY=
+pipelined.dev/vst2 v0.6.0/go.mod h1:SYU1Sn97zjz3j0X0vpOUcbKb+nBHhQmrp8iLkEvC/5o=
+pipelined.dev/wav v0.4.0 h1:sK89RpXavSpR1vUa7BKePuk1soKlRxMA10bRq6chPqk=
+pipelined.dev/wav v0.4.0/go.mod h1:FVfKhvOo6KgLzXMzHR8RnXSLb5j1TlnB2J1ISeXFIZA=
