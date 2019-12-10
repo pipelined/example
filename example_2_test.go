@@ -5,10 +5,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/pipelined/pipe"
-	"github.com/pipelined/signal"
-	"github.com/pipelined/vst2"
-	"github.com/pipelined/wav"
+	"pipelined.dev/pipe"
+	"pipelined.dev/signal"
+	"pipelined.dev/vst2"
+	"pipelined.dev/wav"
 )
 
 // This example demonstrates how to process .wav file with

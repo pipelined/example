@@ -5,11 +5,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/pipelined/audio"
-	"github.com/pipelined/pipe"
-	"github.com/pipelined/portaudio"
-	"github.com/pipelined/signal"
-	"github.com/pipelined/wav"
+	"pipelined.dev/audio"
+	"pipelined.dev/pipe"
+	"pipelined.dev/portaudio"
+	"pipelined.dev/signal"
+	"pipelined.dev/wav"
 )
 
 // This example demonstrates how to read signal from .wav file,
