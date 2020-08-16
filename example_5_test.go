@@ -6,10 +6,10 @@ import (
 	"os"
 
 	"pipelined.dev/audio"
-	"pipelined.dev/mp3"
+	"pipelined.dev/audio/mp3"
+	"pipelined.dev/audio/vst2"
+	"pipelined.dev/audio/wav"
 	"pipelined.dev/pipe"
-	"pipelined.dev/vst2"
-	"pipelined.dev/wav"
 )
 
 // This example demonstrates how to read two .wav files, mix,
@@ -50,45 +50,44 @@ func Example_5() {
 	}
 	defer outputFile.Close()
 
-	// create a pipe with three lines.
-	p, err := pipe.New(
+	bufferSize := 512
+	lines, err := pipe.Lines(bufferSize,
 		// line for mixing first wav file.
-		&pipe.Line{
+		pipe.Routing{
 			// wav pump.
-			Pump: &wav.Pump{ReadSeeker: inputFile1},
+			Source: wav.Source(inputFile1),
 			// mixer sink.
-			Sinks: pipe.Sinks(mixer),
+			Sink: mixer.Sink(),
 		},
 		// line for mixing second wav file.
-		&pipe.Line{
+		pipe.Routing{
 			// wav pump.
-			Pump: &wav.Pump{ReadSeeker: inputFile2},
+			Source: wav.Source(inputFile2),
 			// mixer sink.
-			Sinks: pipe.Sinks(mixer),
+			Sink: mixer.Sink(),
 		},
 		// line for sinking mp3.
-		&pipe.Line{
+		pipe.Routing{
 			// mixer pump.
-			Pump: mixer,
+			Source: mixer.Source(),
 			// vst2 processor.
-			Processors: pipe.Processors(&vst2.Processor{VST: vst}),
-			Sinks: pipe.Sinks(
-				// mp3 sink
-				&mp3.Sink{
-					Writer:      outputFile,
-					BitRateMode: mp3.VBR(0),
-					ChannelMode: mp3.JointStereo,
-				},
+			Processors: pipe.Processors(
+				vst2.Processor(vst, nil),
+			),
+			Sink: mp3.Sink(
+				outputFile,
+				mp3.VBR(0),
+				mp3.JointStereo,
+				mp3.DefaultEncodingQuality,
 			),
 		},
 	)
 	if err != nil {
-		log.Fatalf("failed to bind pipeline: %v", err)
+		log.Fatalf("failed to bind lines: %v", err)
 	}
-	defer p.Close()
 
-	// run the pipeline.
-	err = pipe.Wait(p.Run(context.Background(), 512))
+	// execute the pipe with three lines.
+	err = pipe.New(context.Background(), pipe.WithLines(lines...)).Wait()
 	if err != nil {
 		log.Fatalf("failed to execute pipeline: %v", err)
 	}

@@ -4,12 +4,13 @@ import (
 	"context"
 	"log"
 	"os"
+	"time"
 
 	"pipelined.dev/audio"
+	"pipelined.dev/audio/portaudio"
+	"pipelined.dev/audio/wav"
 	"pipelined.dev/pipe"
-	"pipelined.dev/portaudio"
 	"pipelined.dev/signal"
-	"pipelined.dev/wav"
 )
 
 // This example demonstrates how to read signal from .wav file,
@@ -23,35 +24,37 @@ func Example_4() {
 	}
 	defer inputFile.Close()
 
+	bufferSize := 512
 	// asset sink.
 	asset := &audio.Asset{}
 
-	// read wav pipeline.
-	wavFile, err := pipe.New(
-		&pipe.Line{
-			// wav pump.
-			Pump: &wav.Pump{ReadSeeker: inputFile},
-			// in-memory asset.
-			Sinks: pipe.Sinks(asset),
-		},
-	)
+	// read wav line.
+	l, err := pipe.Routing{
+		Source: wav.Source(inputFile),
+		Sink:   asset.Sink(),
+	}.Line(bufferSize)
 	if err != nil {
 		log.Fatalf("failed to bind import pipeline: %v", err)
 	}
-	defer wavFile.Close()
 
-	err = pipe.Wait(wavFile.Run(context.Background(), 512))
+	err = pipe.New(context.Background(), pipe.WithLines(l)).Wait()
 	if err != nil {
 		log.Fatalf("failed to execute import pipeline: %v", err)
 	}
 
+	sampleRate := asset.SampleRate()
 	// track pump.
-	track := audio.NewTrack(asset.SampleRate(), asset.NumChannels())
+	track := audio.Track{
+		SampleRate: asset.SampleRate(),
+		Channels:   asset.Channels(),
+	}
 
 	// add samples.
-	track.AddClip(198450, asset.Clip(0, 44100))
-	track.AddClip(66150, asset.Clip(44100, 44100))
-	track.AddClip(132300, asset.Clip(0, 44100))
+	track.AddClip(198450, signal.Slice(asset.Signal, 0, sampleRate.SamplesIn(1*time.Second)))
+	track.AddClip(66150, signal.Slice(asset.Signal, sampleRate.SamplesIn(1*time.Second), sampleRate.SamplesIn(2*time.Second)))
+	track.AddClip(132300, signal.Slice(asset.Signal, 0, sampleRate.SamplesIn(1*time.Second)))
+
+	repeater := audio.Repeater{}
 
 	// create output file.
 	outputFile, err := os.Create("_testdata/out4.wav")
@@ -60,29 +63,37 @@ func Example_4() {
 	}
 	defer outputFile.Close()
 
-	// pipeline to process clips.
-	p, err := pipe.New(
-		&pipe.Line{
-			// track with clips.
-			Pump: track,
-			Sinks: pipe.Sinks(
-				// wav sink.
-				&wav.Sink{
-					WriteSeeker: outputFile,
-					BitDepth:    signal.BitDepth16,
-				},
-				// portaudio sink.
-				&portaudio.Sink{},
-			),
+	err = portaudio.Initialize()
+	if err != nil {
+		log.Fatalf("failed to init portaudio: %v", err)
+	}
+	defer portaudio.Terminate()
+	device, err := portaudio.DefaultInputDevice()
+	if err != nil {
+		log.Fatalf("failed to get default system device: %v", err)
+	}
+
+	lines, err := pipe.Lines(
+		bufferSize,
+		pipe.Routing{
+			Source: track.Source(0, 0),
+			Sink:   repeater.Sink(),
+		},
+		pipe.Routing{
+			Source: repeater.Source(),
+			Sink:   wav.Sink(outputFile, signal.BitDepth16),
+		},
+		pipe.Routing{
+			Source: repeater.Source(),
+			Sink:   portaudio.Sink(device),
 		},
 	)
 	if err != nil {
-		log.Fatalf("failed to bind playback and save pipeline: %v", err)
+		log.Fatalf("failed to bind lines: %v", err)
 	}
-	defer p.Close()
 
-	// run the pipeline.
-	err = pipe.Wait(p.Run(context.Background(), 512))
+	// execute the pipe with three lines.
+	err = pipe.New(context.Background(), pipe.WithLines(lines...)).Wait()
 	if err != nil {
 		log.Fatalf("failed to execute playback and save pipeline: %v", err)
 	}

@@ -7,8 +7,9 @@ import (
 	"time"
 
 	"pipelined.dev/audio"
-	"pipelined.dev/mp3"
+	"pipelined.dev/audio/mp3"
 	"pipelined.dev/pipe"
+	"pipelined.dev/signal"
 )
 
 // This example demonstrates how to cut a clip from .mp3 file
@@ -30,23 +31,20 @@ func Example_6() {
 
 	// asset to keep mp3 signal.
 	a := &audio.Asset{}
-	// build pipe with a single line.
-	p, err := pipe.New(
-		&pipe.Line{
-			// mp3 pump.
-			Pump: &mp3.Pump{
-				Reader: mp3File,
-			},
-			// asset sink.
-			Sinks: pipe.Sinks(a),
-		},
-	)
+
+	bufferSize := 512
+	l, err := pipe.Routing{
+		// mp3 pump.
+		Source: mp3.Source(mp3File),
+		// asset sink.
+		Sink: a.Sink(),
+	}.Line(bufferSize)
 	if err != nil {
 		log.Fatalf("failed to bind asset pipeline: %v", err)
 	}
-	defer p.Close()
-	// run the line.
-	err = pipe.Wait(p.Run(context.Background(), 512))
+
+	// execute pipe with a single line.
+	err = pipe.New(context.Background(), pipe.WithLines(l)).Wait()
 	if err != nil {
 		log.Fatalf("failed to execute asset pipeline: %v", err)
 	}
@@ -55,32 +53,28 @@ func Example_6() {
 	// it will be needed to convert duration.
 	sampleRate := a.SampleRate()
 	// cut the clip that starts at 1 second and lasts 2.5 seconds.
-	c := a.Clip(
+	clip := signal.Slice(
+		a.Signal,
 		sampleRate.SamplesIn(time.Millisecond*1000),
-		sampleRate.SamplesIn(time.Millisecond*2500),
+		sampleRate.SamplesIn(time.Millisecond*3500),
 	)
-	// build pipe with a single line.
-	p, err = pipe.New(
-		&pipe.Line{
-			// mp3 pump.
-			Pump: c,
-			// asset sink.
-			Sinks: pipe.Sinks(
-				// mp3 sink
-				&mp3.Sink{
-					Writer:      outputFile,
-					BitRateMode: mp3.CBR(320),
-					ChannelMode: mp3.JointStereo,
-				},
-			),
-		},
-	)
+
+	l, err = pipe.Routing{
+		// clip source
+		Source: audio.Source(sampleRate, clip),
+		// mp3 sink
+		Sink: mp3.Sink(
+			outputFile,
+			mp3.CBR(320),
+			mp3.JointStereo,
+			mp3.DefaultEncodingQuality,
+		),
+	}.Line(bufferSize)
 	if err != nil {
 		log.Fatalf("failed to bind output pipeline: %v", err)
 	}
-	defer p.Close()
-	// run the line.
-	err = pipe.Wait(p.Run(context.Background(), 512))
+	// build pipe with a single line.
+	err = pipe.New(context.Background(), pipe.WithLines(l)).Wait()
 	if err != nil {
 		log.Fatalf("failed to execute output pipeline: %v", err)
 	}
