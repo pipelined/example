@@ -5,13 +5,14 @@ import (
 	"log"
 	"os"
 
+	"pipelined.dev/audio/portaudio"
+	"pipelined.dev/audio/wav"
 	"pipelined.dev/pipe"
-	"pipelined.dev/portaudio"
-	"pipelined.dev/wav"
 )
 
 // This example demonstrates how to play .wav file with portaudio.
 func Example_1() {
+	bufferSize := 512
 	// open source wav file.
 	wavFile, err := os.Open("_testdata/sample1.wav")
 	if err != nil {
@@ -19,24 +20,29 @@ func Example_1() {
 	}
 	defer wavFile.Close()
 
-	// build pipe with a single line.
-	p, err := pipe.New(
-		&pipe.Line{
-			// wav pump.
-			Pump: &wav.Pump{
-				ReadSeeker: wavFile,
-			},
-			// portaudio sink.
-			Sinks: pipe.Sinks(&portaudio.Sink{}),
-		},
-	)
+	err = portaudio.Initialize()
 	if err != nil {
-		log.Fatalf("failed to bind pipeline: %v", err)
+		log.Fatalf("failed to initialize portaudio: %v", err)
 	}
-	defer p.Close()
+	defer portaudio.Terminate()
 
-	// run the pipe.
-	err = pipe.Wait(p.Run(context.Background(), 512))
+	device, err := portaudio.DefaultOutputDevice()
+	if err != nil {
+		log.Fatalf("failed to get default system device: %v", err)
+	}
+	// build pipe with a single line.
+	l, err := pipe.Routing{
+		Source: wav.Source(wavFile),
+		Sink:   portaudio.Sink(device),
+	}.Line(bufferSize)
+	if err != nil {
+		log.Fatalf("failed to bind line: %v", err)
+	}
+
+	err = pipe.New(
+		context.Background(),
+		pipe.WithLines(l),
+	).Wait()
 	if err != nil {
 		log.Fatalf("failed to execute pipeline: %v", err)
 	}

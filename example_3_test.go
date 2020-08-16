@@ -6,9 +6,9 @@ import (
 	"os"
 
 	"pipelined.dev/audio"
+	"pipelined.dev/audio/wav"
 	"pipelined.dev/pipe"
 	"pipelined.dev/signal"
-	"pipelined.dev/wav"
 )
 
 // This example demonstrates how to read two .wav files,
@@ -42,42 +42,25 @@ func Example_3() {
 	// create mixer with 2 channels.
 	mix := audio.NewMixer(2)
 
-	// create a pipe with three pipes.
-	p, err := pipe.New(
-		// line for first input.
-		&pipe.Line{
-			// wav pump.
-			Pump: &wav.Pump{ReadSeeker: inputFile1},
-			// mixer sink.
-			Sinks: pipe.Sinks(mix),
+	bufferSize := 512
+	lines, err := pipe.Lines(
+		bufferSize,
+		pipe.Routing{
+			Source: wav.Source(inputFile1),
+			Sink:   mix.Sink(),
 		},
-		// line for second input
-		&pipe.Line{
-			// wav pump.
-			Pump: &wav.Pump{ReadSeeker: inputFile2},
-			// mixer sink.
-			Sinks: pipe.Sinks(mix),
+		pipe.Routing{
+			Source: wav.Source(inputFile2),
+			Sink:   mix.Sink(),
 		},
-		// line for output.
-		&pipe.Line{
-			// mixer pump.
-			Pump: mix,
-			// wav sink.
-			Sinks: pipe.Sinks(
-				&wav.Sink{
-					WriteSeeker: outputFile,
-					BitDepth:    signal.BitDepth16,
-				},
-			),
+		pipe.Routing{
+			Source: mix.Source(),
+			Sink:   wav.Sink(outputFile, signal.BitDepth16),
 		},
 	)
-	if err != nil {
-		log.Fatalf("failed to bind pipeline: %v", err)
-	}
-	defer p.Close()
 
 	// run the pipeline.
-	err = pipe.Wait(p.Run(context.Background(), 512))
+	err = pipe.New(context.Background(), pipe.WithLines(lines...)).Wait()
 	if err != nil {
 		log.Fatalf("failed to execute pipeline: %v", err)
 	}

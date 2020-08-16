@@ -5,10 +5,10 @@ import (
 	"log"
 	"os"
 
+	"pipelined.dev/audio/vst2"
+	"pipelined.dev/audio/wav"
 	"pipelined.dev/pipe"
 	"pipelined.dev/signal"
-	"pipelined.dev/vst2"
-	"pipelined.dev/wav"
 )
 
 // This example demonstrates how to process .wav file with
@@ -35,35 +35,24 @@ func Example_2() {
 	}
 	defer outputFile.Close()
 
-	// build a pipe with single line.
-	p, err := pipe.New(
-		&pipe.Line{
-			// wav pump.
-			Pump: &wav.Pump{
-				ReadSeeker: inputFile,
-			},
-			// vst2 processor.
-			Processors: pipe.Processors(
-				&vst2.Processor{
-					VST: vst,
-				},
-			),
-			// wav sink.
-			Sinks: pipe.Sinks(
-				&wav.Sink{
-					BitDepth:    signal.BitDepth16,
-					WriteSeeker: outputFile,
-				},
-			),
-		},
-	)
+	bufferSize := 512
+	// build the line.
+	l, err := pipe.Routing{
+		// wav pump.
+		Source: wav.Source(inputFile),
+		// vst2 processor.
+		Processors: pipe.Processors(
+			vst2.Processor(vst, nil),
+		),
+		// wav sink.
+		Sink: wav.Sink(outputFile, signal.BitDepth16),
+	}.Line(bufferSize)
 	if err != nil {
-		log.Fatalf("failed to bind pipeline: %v", err)
+		log.Fatalf("failed to bind line: %v", err)
 	}
-	defer p.Close()
 
-	// run the pipeline.
-	err = pipe.Wait(p.Run(context.Background(), 512))
+	// run the pipe with a single line.
+	err = pipe.New(context.Background(), pipe.WithLines(l)).Wait()
 	if err != nil {
 		log.Fatalf("failed to execute pipeline: %v", err)
 	}
