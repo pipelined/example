@@ -27,3 +27,7 @@ func Test5(t *testing.T) {
 func Test6(t *testing.T) {
 	Example_6()
 }
+
+func Test7(t *testing.T) {
+	Example_7()
+}
