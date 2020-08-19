@@ -34,7 +34,7 @@ func Example_5() {
 	defer inputFile2.Close()
 
 	// create new mixer with 2 channels.
-	mixer := audio.NewMixer(2)
+	mixer := audio.Mixer{}
 
 	// open vst library.
 	vst, err := vst2.Open("_testdata/Krush.vst")
@@ -72,7 +72,7 @@ func Example_5() {
 			Source: mixer.Source(),
 			// vst2 processor.
 			Processors: pipe.Processors(
-				vst2.Processor(vst, nil),
+				vst2.Processor(vst, vst2.DefaultHostCallback, nil),
 			),
 			Sink: mp3.Sink(
 				outputFile,

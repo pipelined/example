@@ -44,10 +44,7 @@ func Example_4() {
 
 	sampleRate := asset.SampleRate()
 	// track pump.
-	track := audio.Track{
-		SampleRate: asset.SampleRate(),
-		Channels:   asset.Channels(),
-	}
+	track := audio.Track{}
 
 	// add samples.
 	track.AddClip(198450, signal.Slice(asset.Signal, 0, sampleRate.SamplesIn(1*time.Second)))
@@ -68,7 +65,7 @@ func Example_4() {
 		log.Fatalf("failed to init portaudio: %v", err)
 	}
 	defer portaudio.Terminate()
-	device, err := portaudio.DefaultInputDevice()
+	device, err := portaudio.DefaultOutputDevice()
 	if err != nil {
 		log.Fatalf("failed to get default system device: %v", err)
 	}
@@ -76,7 +73,7 @@ func Example_4() {
 	lines, err := pipe.Lines(
 		bufferSize,
 		pipe.Routing{
-			Source: track.Source(0, 0),
+			Source: track.Source(sampleRate, 0, 0),
 			Sink:   repeater.Sink(),
 		},
 		pipe.Routing{

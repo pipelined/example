@@ -17,13 +17,16 @@ golang.org/x/mobile v0.0.0-20190415191353-3e0bab5405d6/go.mod h1:E/iHnbuqvinMTCc
 golang.org/x/sys v0.0.0-20190312061237-fead79001313/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20190429190828-d89cdac9e872/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
+pipelined.dev/audio v0.3.0 h1:WM9hNRI9pbeInEoczgERBCs8R9tkjueiUigEbEUdgsQ=
+pipelined.dev/audio v0.3.0/go.mod h1:664LJozTT2y7lkqKXG2zxEYl6eUTn7R9EEWy5sHrL18=
 pipelined.dev/audio/mp3 v0.5.0 h1:MxAaSSe2DIOlsqTXYb0r1S3PvUmhmCJWYAOqRiVdk9U=
 pipelined.dev/audio/mp3 v0.5.0/go.mod h1:DJZcjahggfUYygpha6xyHvS4qYctIUJDVE0H/a2+mPM=
 pipelined.dev/audio/portaudio v0.3.0 h1:Pq1iYXUxwBglB/XmB+lpJczXbeS+EmVkqQutTN8V5hA=
 pipelined.dev/audio/portaudio v0.3.0/go.mod h1:pFakHcm5y/VStFNEmyACAZ7Ym4pbhDpN0UoN+7r2xKI=
+pipelined.dev/audio/vst2 v0.7.0 h1:xopdmdNzeUrWSPY0sWpLJsOENsohdlXxYNVPDUcesYM=
+pipelined.dev/audio/vst2 v0.7.0/go.mod h1:w5FHYKAcWjorZuugkdpqBh7nGh7Z0AfcwYMJnn7cTMM=
 pipelined.dev/audio/wav v0.5.0 h1:5f+ooQK20lUdfbNV0G5zhAfbhapOlUx+xuZXVZKGtOQ=
 pipelined.dev/audio/wav v0.5.0/go.mod h1:zuCzfX/Wz0IXPqiziXraB0O/LgOdsKbg6u7EtW62GKQ=
-pipelined.dev/pipe v0.8.3/go.mod h1:VF3EecmES6UYXmO2yloIYgGgeCctUq2Dz0/h4GMjwAY=
 pipelined.dev/pipe v0.8.4 h1:UFyH26AWW3GkVOWIla9zQYqDzbWW6NwdFDnvsrCKwVg=
 pipelined.dev/pipe v0.8.4/go.mod h1:VF3EecmES6UYXmO2yloIYgGgeCctUq2Dz0/h4GMjwAY=
 pipelined.dev/signal v0.8.0 h1:L66vzenF0F6R2XhFy0pOftb83mFDkVqVugKnvs0eS7M=

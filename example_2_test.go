@@ -42,7 +42,7 @@ func Example_2() {
 		Source: wav.Source(inputFile),
 		// vst2 processor.
 		Processors: pipe.Processors(
-			vst2.Processor(vst, nil),
+			vst2.Processor(vst, vst2.DefaultHostCallback, nil),
 		),
 		// wav sink.
 		Sink: wav.Sink(outputFile, signal.BitDepth16),
