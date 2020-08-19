@@ -5,7 +5,7 @@ import (
 )
 
 func Test1(t *testing.T) {
-	Example_1()
+	ExampleOne1()
 }
 
 func Test2(t *testing.T) {

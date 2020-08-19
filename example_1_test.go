@@ -11,7 +11,7 @@ import (
 )
 
 // This example demonstrates how to play .wav file with portaudio.
-func Example_1() {
+func Example_first() {
 	bufferSize := 512
 	// open source wav file.
 	wavFile, err := os.Open("_testdata/sample1.wav")
