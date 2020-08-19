@@ -16,7 +16,7 @@ import (
 // This example demonstrates how to read signal from .wav file,
 // compose a track with clips from that file and then sumalteniously
 // save it to new .wav file and play it with portaudio.
-func Example_4() {
+func Example_four() {
 	// open input file.
 	inputFile, err := os.Open("_testdata/sample1.wav")
 	if err != nil {

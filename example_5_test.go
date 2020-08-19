@@ -18,7 +18,7 @@ import (
 // NOTE: For simplicity both wav files have same characteristics i.e:
 // sample rate and number of channels. In real life explicit
 // conversion might be needed.
-func Example_5() {
+func Example_five() {
 	// open first wav input.
 	inputFile1, err := os.Open("_testdata/sample1.wav")
 	if err != nil {

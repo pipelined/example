@@ -17,7 +17,7 @@ import (
 // This example demonstrates how to walk file system and process files
 // depending on audio file format. It converts all mp3 files to 16-bit wav
 // and removes all flac files.
-func Example_7() {
+func Example_seven() {
 	err := filepath.Walk("_testdata", fileformat.Walk(
 		func(f fileformat.Format, path string, fi os.FileInfo) error {
 			switch f {

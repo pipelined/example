@@ -14,7 +14,7 @@ import (
 
 // This example demonstrates how to cut a clip from .mp3 file
 // and save the result to new .mp3 file.
-func Example_6() {
+func Example_six() {
 	// open source wav file.
 	mp3File, err := os.Open("_testdata/sample.mp3")
 	if err != nil {

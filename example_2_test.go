@@ -13,7 +13,7 @@ import (
 
 // This example demonstrates how to process .wav file with
 // vst2 plugin and write result to a new .wav file.
-func Example_2() {
+func Example_two() {
 	// open input file.
 	inputFile, err := os.Open("_testdata/sample1.wav")
 	if err != nil {
