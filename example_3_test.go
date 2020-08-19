@@ -40,7 +40,7 @@ func Example_3() {
 	defer outputFile.Close()
 
 	// create mixer with 2 channels.
-	mix := audio.NewMixer(2)
+	mix := audio.Mixer{}
 
 	bufferSize := 512
 	lines, err := pipe.Lines(
