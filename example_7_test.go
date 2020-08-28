@@ -19,9 +19,9 @@ import (
 // and removes all flac files.
 func Example_seven() {
 	err := filepath.Walk("_testdata", fileformat.Walk(
-		func(f fileformat.Format, path string, fi os.FileInfo) error {
+		func(f *fileformat.Format, path string, fi os.FileInfo) error {
 			switch f {
-			case fileformat.MP3:
+			case fileformat.MP3():
 				// open mp3 input file
 				input, err := os.Open(path)
 				if err != nil {
@@ -44,7 +44,7 @@ func Example_seven() {
 
 				// execute the pipe with single line
 				return pipe.New(context.Background(), pipe.WithLines(line)).Wait()
-			case fileformat.FLAC:
+			case fileformat.FLAC():
 				// remove flac file
 				return os.Remove(path)
 			}
