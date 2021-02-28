@@ -43,24 +43,24 @@ func Example_three() {
 	mix := audio.Mixer{}
 
 	bufferSize := 512
-	lines, err := pipe.Lines(
+	p, err := pipe.New(
 		bufferSize,
-		pipe.Routing{
+		pipe.Line{
 			Source: wav.Source(inputFile1),
 			Sink:   mix.Sink(),
 		},
-		pipe.Routing{
+		pipe.Line{
 			Source: wav.Source(inputFile2),
 			Sink:   mix.Sink(),
 		},
-		pipe.Routing{
+		pipe.Line{
 			Source: mix.Source(),
 			Sink:   wav.Sink(outputFile, signal.BitDepth16),
 		},
 	)
 
 	// run the pipeline.
-	err = pipe.New(context.Background(), pipe.WithLines(lines...)).Wait()
+	err = pipe.Wait(p.Start(context.Background()))
 	if err != nil {
 		log.Fatalf("failed to execute pipeline: %v", err)
 	}

@@ -31,18 +31,18 @@ func Example_one() {
 		log.Fatalf("failed to get default system device: %v", err)
 	}
 	// build pipe with a single line.
-	l, err := pipe.Routing{
-		Source: wav.Source(wavFile),
-		Sink:   portaudio.Sink(device),
-	}.Line(bufferSize)
+	p, err := pipe.New(
+		bufferSize,
+		pipe.Line{
+			Source: wav.Source(wavFile),
+			Sink:   portaudio.Sink(device),
+		},
+	)
 	if err != nil {
-		log.Fatalf("failed to bind line: %v", err)
+		log.Fatalf("failed to bind pipeline: %v", err)
 	}
 
-	err = pipe.New(
-		context.Background(),
-		pipe.WithLines(l),
-	).Wait()
+	err = pipe.Wait(p.Start(context.Background()))
 	if err != nil {
 		log.Fatalf("failed to execute pipeline: %v", err)
 	}

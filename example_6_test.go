@@ -33,18 +33,21 @@ func Example_six() {
 	a := &audio.Asset{}
 
 	bufferSize := 512
-	l, err := pipe.Routing{
-		// mp3 pump.
-		Source: mp3.Source(mp3File),
-		// asset sink.
-		Sink: a.Sink(),
-	}.Line(bufferSize)
+	p, err := pipe.New(
+		bufferSize,
+		pipe.Line{
+			// mp3 pump.
+			Source: mp3.Source(mp3File),
+			// asset sink.
+			Sink: a.Sink(),
+		},
+	)
 	if err != nil {
 		log.Fatalf("failed to bind asset pipeline: %v", err)
 	}
 
 	// execute pipe with a single line.
-	err = pipe.New(context.Background(), pipe.WithLines(l)).Wait()
+	err = pipe.Wait(p.Start(context.Background()))
 	if err != nil {
 		log.Fatalf("failed to execute asset pipeline: %v", err)
 	}
@@ -55,26 +58,29 @@ func Example_six() {
 	// cut the clip that starts at 1 second and lasts 2.5 seconds.
 	clip := signal.Slice(
 		a.Signal,
-		sampleRate.SamplesIn(time.Millisecond*1000),
-		sampleRate.SamplesIn(time.Millisecond*3500),
+		sampleRate.Events(time.Millisecond*1000),
+		sampleRate.Events(time.Millisecond*3500),
 	)
 
-	l, err = pipe.Routing{
-		// clip source
-		Source: audio.Source(sampleRate, clip),
-		// mp3 sink
-		Sink: mp3.Sink(
-			outputFile,
-			mp3.CBR(320),
-			mp3.JointStereo,
-			mp3.DefaultEncodingQuality,
-		),
-	}.Line(bufferSize)
+	p, err = pipe.New(
+		bufferSize,
+		pipe.Line{
+			// clip source
+			Source: audio.Source(sampleRate, clip),
+			// mp3 sink
+			Sink: mp3.Sink(
+				outputFile,
+				mp3.CBR(320),
+				mp3.JointStereo,
+				mp3.DefaultEncodingQuality,
+			),
+		},
+	)
 	if err != nil {
 		log.Fatalf("failed to bind output pipeline: %v", err)
 	}
 	// build pipe with a single line.
-	err = pipe.New(context.Background(), pipe.WithLines(l)).Wait()
+	err = pipe.Wait(p.Start(context.Background()))
 	if err != nil {
 		log.Fatalf("failed to execute output pipeline: %v", err)
 	}

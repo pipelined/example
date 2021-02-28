@@ -34,16 +34,19 @@ func Example_seven() {
 				defer output.Close()
 
 				// bind the line
-				line, err := pipe.Routing{
-					Source: mp3.Source(input),
-					Sink:   wav.Sink(output, signal.BitDepth16),
-				}.Line(512)
+				p, err := pipe.New(
+					512,
+					pipe.Line{
+						Source: mp3.Source(input),
+						Sink:   wav.Sink(output, signal.BitDepth16),
+					},
+				)
 				if err != nil {
 					return err
 				}
 
 				// execute the pipe with single line
-				return pipe.New(context.Background(), pipe.WithLines(line)).Wait()
+				return pipe.Wait(p.Start(context.Background()))
 			case fileformat.FLAC():
 				// remove flac file
 				return os.Remove(path)

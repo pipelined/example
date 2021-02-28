@@ -29,15 +29,18 @@ func Example_four() {
 	asset := &audio.Asset{}
 
 	// read wav line.
-	l, err := pipe.Routing{
-		Source: wav.Source(inputFile),
-		Sink:   asset.Sink(),
-	}.Line(bufferSize)
+	p, err := pipe.New(
+		bufferSize,
+		pipe.Line{
+			Source: wav.Source(inputFile),
+			Sink:   asset.Sink(),
+		},
+	)
 	if err != nil {
 		log.Fatalf("failed to bind import pipeline: %v", err)
 	}
 
-	err = pipe.New(context.Background(), pipe.WithLines(l)).Wait()
+	err = pipe.Wait(p.Start(context.Background()))
 	if err != nil {
 		log.Fatalf("failed to execute import pipeline: %v", err)
 	}
@@ -47,9 +50,9 @@ func Example_four() {
 	track := audio.Track{}
 
 	// add samples.
-	track.AddClip(198450, signal.Slice(asset.Signal, 0, sampleRate.SamplesIn(1*time.Second)))
-	track.AddClip(66150, signal.Slice(asset.Signal, sampleRate.SamplesIn(1*time.Second), sampleRate.SamplesIn(2*time.Second)))
-	track.AddClip(132300, signal.Slice(asset.Signal, 0, sampleRate.SamplesIn(1*time.Second)))
+	track.AddClip(198450, signal.Slice(asset.Signal, 0, sampleRate.Events(1*time.Second)))
+	track.AddClip(66150, signal.Slice(asset.Signal, sampleRate.Events(1*time.Second), sampleRate.Events(2*time.Second)))
+	track.AddClip(132300, signal.Slice(asset.Signal, 0, sampleRate.Events(1*time.Second)))
 
 	repeater := audio.Repeater{}
 
@@ -70,17 +73,17 @@ func Example_four() {
 		log.Fatalf("failed to get default system device: %v", err)
 	}
 
-	lines, err := pipe.Lines(
+	p, err = pipe.New(
 		bufferSize,
-		pipe.Routing{
+		pipe.Line{
 			Source: track.Source(sampleRate, 0, 0),
 			Sink:   repeater.Sink(),
 		},
-		pipe.Routing{
+		pipe.Line{
 			Source: repeater.Source(),
 			Sink:   wav.Sink(outputFile, signal.BitDepth16),
 		},
-		pipe.Routing{
+		pipe.Line{
 			Source: repeater.Source(),
 			Sink:   portaudio.Sink(device),
 		},
@@ -90,7 +93,7 @@ func Example_four() {
 	}
 
 	// execute the pipe with three lines.
-	err = pipe.New(context.Background(), pipe.WithLines(lines...)).Wait()
+	err = pipe.Wait(p.Start(context.Background()))
 	if err != nil {
 		log.Fatalf("failed to execute playback and save pipeline: %v", err)
 	}

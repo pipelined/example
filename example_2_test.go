@@ -37,22 +37,22 @@ func Example_two() {
 
 	bufferSize := 512
 	// build the line.
-	l, err := pipe.Routing{
+	p, err := pipe.New(bufferSize, pipe.Line{
 		// wav pump.
 		Source: wav.Source(inputFile),
 		// vst2 processor.
 		Processors: pipe.Processors(
-			vst2.Processor(vst, vst2.DefaultHostCallback, nil),
+			vst.Processor(vst2.Host{}).Allocator(nil),
 		),
 		// wav sink.
 		Sink: wav.Sink(outputFile, signal.BitDepth16),
-	}.Line(bufferSize)
+	})
 	if err != nil {
 		log.Fatalf("failed to bind line: %v", err)
 	}
 
 	// run the pipe with a single line.
-	err = pipe.New(context.Background(), pipe.WithLines(l)).Wait()
+	err = pipe.Wait(p.Start(context.Background()))
 	if err != nil {
 		log.Fatalf("failed to execute pipeline: %v", err)
 	}

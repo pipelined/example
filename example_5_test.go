@@ -51,28 +51,28 @@ func Example_five() {
 	defer outputFile.Close()
 
 	bufferSize := 512
-	lines, err := pipe.Lines(bufferSize,
+	p, err := pipe.New(bufferSize,
 		// line for mixing first wav file.
-		pipe.Routing{
+		pipe.Line{
 			// wav pump.
 			Source: wav.Source(inputFile1),
 			// mixer sink.
 			Sink: mixer.Sink(),
 		},
 		// line for mixing second wav file.
-		pipe.Routing{
+		pipe.Line{
 			// wav pump.
 			Source: wav.Source(inputFile2),
 			// mixer sink.
 			Sink: mixer.Sink(),
 		},
 		// line for sinking mp3.
-		pipe.Routing{
+		pipe.Line{
 			// mixer pump.
 			Source: mixer.Source(),
 			// vst2 processor.
 			Processors: pipe.Processors(
-				vst2.Processor(vst, vst2.DefaultHostCallback, nil),
+				vst.Processor(vst2.Host{}).Allocator(nil),
 			),
 			Sink: mp3.Sink(
 				outputFile,
@@ -87,7 +87,7 @@ func Example_five() {
 	}
 
 	// execute the pipe with three lines.
-	err = pipe.New(context.Background(), pipe.WithLines(lines...)).Wait()
+	err = pipe.Wait(p.Start(context.Background()))
 	if err != nil {
 		log.Fatalf("failed to execute pipeline: %v", err)
 	}
